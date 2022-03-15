@@ -146,11 +146,13 @@ public class ControladorEmpleats {
 		}else {		
 			try {
 				if (!foto.isEmpty()) {
-					Path rootPath = Paths.get("uploads").resolve(foto.getOriginalFilename()).toAbsolutePath();
+					//Path rootPath = Paths.get("uploads").resolve(foto.getOriginalFilename()).toAbsolutePath();
+					Path rootPath = Paths.get("uploads/empleat"+id+".jpg").toAbsolutePath();
 					Files.copy(foto.getInputStream(), rootPath);
 					missatge = "Foto pujada:" + foto.getOriginalFilename();
 					empleat.setFoto(true);
-					empleat.setNomFoto(foto.getOriginalFilename());					
+					//empleat.setNomFoto(foto.getOriginalFilename());
+					empleat.setNomFoto("empleat"+id+".jpg");
 				} else {
 					missatge = "Fitxer buit";
 				}
