@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,17 +40,16 @@ public class ControladorEmpleats {
 	// Mostra tots els empleats
 
 	@GetMapping("/empleats")
-	public List<Empleat> mostraTots() {
-		return baseDeDades.getEmpleats();
+	public ResponseEntity<List<Empleat>> mostraTots() {
+		return new ResponseEntity<List<Empleat>> (baseDeDades.getEmpleats(), HttpStatus.OK);
 	}
 
 	// Crea un empleat
 
 	@PostMapping("/empleats")
-	public Empleat nouEmpleat(@RequestBody Empleat nouEmpleat) {
+	public ResponseEntity<Empleat> nouEmpleat(@RequestBody Empleat nouEmpleat) {
 		baseDeDades.add(nouEmpleat);
-		return nouEmpleat;
-
+		return new ResponseEntity<Empleat> (nouEmpleat, HttpStatus.OK);
 	}
 
 	/*
@@ -74,24 +74,25 @@ public class ControladorEmpleats {
 		}
 		return empleat;
 	}
+	
 
 	// Mostra empleats per feina
 
 	@GetMapping("/feines/{feina}")
-	public List<Empleat> mostraEmpleatsFeina(@PathVariable String feina) {
+	public ResponseEntity<List<Empleat>> mostraEmpleatsFeina(@PathVariable String feina) {
 
 		ArrayList<Empleat> empleatsFeina = baseDeDades.buscaPerFeina(feina);
 
 		if (empleatsFeina.size() == 0) {
 			throw new FeinaNotFoundException(feina);
 		}
-		return empleatsFeina;
+		return new ResponseEntity<List<Empleat>> (empleatsFeina, HttpStatus.OK);
 
 	}
 
 	// Actualitza un empleat
 	@PutMapping("/empleats/{id}")
-	public Empleat canviarEmpleat(@RequestBody Empleat nouEmpleat, @PathVariable int id) {
+	public ResponseEntity<Empleat> canviarEmpleat(@RequestBody Empleat nouEmpleat, @PathVariable int id) {
 
 		Empleat empleat = baseDeDades.buscaId(id);
 
@@ -102,7 +103,7 @@ public class ControladorEmpleats {
 			baseDeDades.add(nouEmpleat);
 		}
 
-		return nouEmpleat;
+		return new ResponseEntity<Empleat> (nouEmpleat, HttpStatus.OK);
 
 	}
 
@@ -137,7 +138,7 @@ public class ControladorEmpleats {
 	// Puja foto empleat
 
 	@PostMapping("/empleats/{id}/foto")
-	public String pujaFoto(@RequestParam("file") MultipartFile foto, @PathVariable int id) {
+	public ResponseEntity<String> pujaFoto(@RequestParam("file") MultipartFile foto, @PathVariable int id) {
 
 		String missatge = null;
 		Empleat empleat = baseDeDades.buscaId(id); 
@@ -160,7 +161,7 @@ public class ControladorEmpleats {
 				missatge = e.getMessage();
 			}
 		}
-		return missatge;
+		return new ResponseEntity<String> (missatge, HttpStatus.OK);
 	}
 
 	// Descarrega foto
@@ -187,7 +188,6 @@ public class ControladorEmpleats {
 			throw new FotoNotFoundException(id);
 		}
 			
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+recurs.getFilename()+"\"").body(recurs);
-		
+		return new ResponseEntity<Resource>(recurs, HttpStatus.OK);
 	}
 }
