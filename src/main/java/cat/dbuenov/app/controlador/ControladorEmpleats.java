@@ -187,7 +187,7 @@ public class ControladorEmpleats {
 			throw new FotoNotFoundException(id);
 		}
 			
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filaname=\""+recurs.getFilename()+"\"").body(recurs);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+recurs.getFilename()+"\"").body(recurs);
 		
 	}
 }
